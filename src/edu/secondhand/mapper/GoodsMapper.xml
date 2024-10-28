@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.GoodsDao">
+
+	<select id="selectGoodsList"  resultType="edu.secondhand.entity.Goods" parameterType="map">
+		select * from goods where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'"/>
+			and name like #{name}
+		</if>
+
+
+		<if test="map.type != null and map.type != '' ">
+			and cname = #{map.type}
+		</if>
+
+
+		<if test="map.index != null and map.index != '' ">
+			and stock != 0
+		</if>
+		order by id desc
+
+	</select>
+
+	<select id="selectCartList"  resultType="edu.secondhand.entity.Cart" parameterType="map">
+		select * from cart where 1 = 1
+		<if test="map.sid != null and map.sid != '' ">
+			and sid = #{map.sid}
+		</if>
+		order by id desc
+	</select>
+
+	   <insert id="addGoods" parameterType="edu.secondhand.entity.Goods" >
+	    insert into goods (cname,name,note,detail,photo,stock,price,discount,create_time)
+	    values (#{Goods.cname},#{Goods.name},#{Goods.note},#{Goods.detail},#{Goods.photo},#{Goods.stock}
+	    ,#{Goods.price},#{Goods.discount},#{Goods.create_time})
+   </insert>
+
+	   <insert id="addCart" parameterType="edu.secondhand.entity.Cart" >
+	    insert into cart (g_id,sid,quantity)
+	    values (#{data.g_id},#{data.sid},#{data.quantity})
+   </insert>
+
+
+	<delete id="deleteGoods" parameterType="java.lang.Integer">
+	    delete from goods
+	    where id = #{id}
+	  </delete>
+
+	<delete id="deleteCart" parameterType="java.lang.Integer">
+	    delete from cart
+	    where id = #{id}
+	  </delete>
+
+	<select id="selectGoodsById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Goods">
+     select * from goods where id = #{id}
+    </select>
+
+	<select id="selectCartByUidAndGid" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Cart">
+     select * from cart where g_id = #{cart.g_id} and sid = #{cart.sid}
+    </select>
+	
+        <update id="updateGoods" parameterType="edu.secondhand.entity.Goods">
+      update goods set
+        cname = #{Goods.cname},
+        name = #{Goods.name},
+        note = #{Goods.note},
+        detail = #{Goods.detail},
+        photo = #{Goods.photo},
+        stock = #{Goods.stock},
+        price = #{Goods.price},
+        discount = #{Goods.discount}
+        where id = #{Goods.id}
+     </update>
+
+        <update id="updateCart" parameterType="edu.secondhand.entity.Cart">
+      update cart set
+        quantity = #{data.quantity}
+        where id = #{data.id}
+     </update>
+        <update id="updateGoodsQuantity" >
+      update goods set
+        stock = #{stock}
+        where id = #{id}
+     </update>
+
+</mapper>

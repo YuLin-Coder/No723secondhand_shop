@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.BoardDao">
+
+	<select id="selectBoardList"  resultType="edu.secondhand.entity.Board" parameterType="map">
+		select * from Board where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="title" value="'%' + map.key + '%'"/>
+			and title like #{title}
+		</if>
+
+
+		<if test="map.search != null and map.search != '' ">
+			<bind name="search" value="'%' + map.search + '%'"/>
+			and title like #{search}
+		</if>
+
+		order by id desc
+
+	</select>
+	   <insert id="addBoard" parameterType="edu.secondhand.entity.Board" >
+	    insert into Board (title,content,create_time)
+	    values (#{Board.title},#{Board.content},#{Board.create_time})
+   </insert>
+
+
+	<delete id="deleteBoard" parameterType="java.lang.Integer">
+	    delete from Board
+	    where id = #{id}
+	  </delete>
+
+	<select id="selectBoardById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Board">
+     select * from Board where id = #{id}
+    </select>
+	
+        <update id="updateBoard" parameterType="edu.secondhand.entity.Board">
+      update Board set 
+        title = #{Board.title},
+        content = #{Board.content}
+        where id = #{Board.id}
+     </update>
+
+</mapper>

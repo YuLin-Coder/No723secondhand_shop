@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.StudentDao">
+
+	<select id="selectStudentList"  resultType="edu.secondhand.entity.Student" parameterType="map">
+		select * from Student where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'"/>
+			and nickname like #{name}
+		</if>
+
+		order by id desc
+
+	</select>
+	   <insert id="addStudent" parameterType="edu.secondhand.entity.Student" >
+	    insert into Student (nickname,sex, bj,phone, photo ,registe_time,pwd,address)
+	    values (#{Student.nickname},#{Student.sex},#{Student.bj},
+	    #{Student.phone},#{Student.photo},#{Student.registe_time},#{Student.pwd},#{Student.address})
+   </insert>
+
+
+    <select id="selectAdmin"  resultType="edu.secondhand.entity.Admin" parameterType="edu.secondhand.entity.Admin">
+      select * from admin  where username = #{username} and password = #{password}
+   </select>
+
+	<select id="selectStudent"  resultType="edu.secondhand.entity.Student" parameterType="edu.secondhand.entity.Student">
+    select * from Student  where phone = #{username} and pwd = #{password}
+   </select>
+
+	<select id="selectStudentByPhone"  resultType="edu.secondhand.entity.Student" parameterType="edu.secondhand.entity.Student">
+    select * from Student  where phone = #{Student.phone}
+   </select>
+
+	<delete id="deleteStudent" parameterType="java.lang.Integer">
+	    delete from Student
+	    where id = #{id}
+	  </delete>
+
+	<select id="selectStudentById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Student">
+     select * from Student where id = #{id}
+    </select>
+	
+        <update id="updateStudent" parameterType="edu.secondhand.entity.Student">
+      update Student set 
+        nickname = #{Student.nickname},
+        sex = #{Student.sex},
+        bj = #{Student.bj},
+        phone = #{Student.phone},
+        photo = #{Student.photo},
+        pwd = #{Student.pwd},
+        address = #{Student.address}
+        where id = #{Student.id}
+     </update>
+    <update id="updateAdminPassword" >
+		update admin set
+		password = #{newpass}
+		where id = #{id}
+	</update>
+   
+</mapper>

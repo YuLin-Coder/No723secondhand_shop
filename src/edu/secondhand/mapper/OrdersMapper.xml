@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.OrdersDao">
+
+	<select id="selectOrdersList"  resultType="edu.secondhand.entity.Orders" parameterType="map">
+		select * from Orders where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="title" value="'%' + map.key + '%'"/>
+			and order_no like #{title}
+		</if>
+
+		order by id desc
+
+	</select>
+
+	<select id="selectItemListByMap"  resultType="edu.secondhand.entity.Items" parameterType="map">
+		select * from items where 1 = 1
+		<if test="map.sid != null and map.sid != '' ">
+			and order_no in (select order_no from orders where sid = #{map.sid} )
+		</if>
+		order by id desc
+	</select>
+
+	<select id="selectItemList"  resultType="edu.secondhand.entity.Items" parameterType="java.lang.String">
+		select * from items where order_no = #{order_no}
+	</select>
+
+
+	   <insert id="addOrders" parameterType="edu.secondhand.entity.Orders" >
+	    insert into Orders (order_no,pay_way,quantity,total_price,sid,create_time)
+	    values (#{Orders.order_no},#{Orders.pay_way},#{Orders.quantity}
+	    ,#{Orders.total_price},#{Orders.sid},#{Orders.create_time})
+   </insert>
+
+
+	<insert id="addItems" parameterType="edu.secondhand.entity.Items" >
+	    insert into items (order_no,g_id,quantity)
+	    values (#{items.order_no},#{items.g_id},#{items.quantity})
+   </insert>
+
+
+	<delete id="deleteOrders" parameterType="java.lang.Integer">
+	    delete from Orders
+	    where id = #{id}
+	  </delete>
+
+	<delete id="deleteItems" parameterType="java.lang.Integer">
+	    delete from items where order_no  = (select order_no from Orders   where id = #{id} )
+	  </delete>
+
+	<select id="selectOrdersById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Orders">
+     select * from Orders where id = #{id}
+    </select>
+
+	<select id="selectOrdersByNo" parameterType="java.lang.String" resultType="edu.secondhand.entity.Orders">
+     select * from Orders where order_no = #{order_no}
+    </select>
+	
+        <update id="updateOrders" parameterType="edu.secondhand.entity.Orders">
+      update Orders set 
+        pay_way = #{Orders.pay_way}
+        where id = #{Orders.id}
+     </update>
+
+
+	<select id="selectInOrderStatics"  resultType="edu.secondhand.entity.Statics">
+     select count(1) as counts , LEFT(create_time,10) as message  from orders  GROUP BY  message
+    </select>
+
+
+	<select id="selectStaticsTwo"  resultType="edu.secondhand.entity.Statics">
+    select
+
+ (select count(1) from orders) as allOrders,
+( select sum(quantity) from orders )as  allSums,
+
+( select sum(total_price) from orders )as  allTotals  from  orders
+
+
+    </select>
+
+
+
+</mapper>

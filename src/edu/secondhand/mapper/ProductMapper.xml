@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.ProductDao">
+
+	<select id="selectProductList"  resultType="edu.secondhand.entity.Product" parameterType="map">
+		select * from product where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'"/>
+			and goodsname like #{name}
+		</if>
+
+		order by id desc
+
+	</select>
+	<select id="selectAllProduct"  resultType="edu.secondhand.entity.Product">
+		select * from product
+	</select>
+	   <insert id="addProduct" parameterType="edu.secondhand.entity.Product" >
+	    insert into product (goodsname,photo,type,publisher,phone,detail,create_date,note,spot,create_time)
+	    values (#{Product.goodsname},#{Product.photo},#{Product.type},
+	    #{Product.publisher},#{Product.phone},#{Product.detail},#{Product.create_date}
+	    ,#{Product.note},#{Product.spot},#{Product.create_time})
+   </insert>
+
+
+	<delete id="deleteProduct" parameterType="java.lang.Integer">
+	    delete from product
+	    where id = #{id}
+	  </delete>
+
+	<select id="selectProductById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Product">
+     select * from product where id = #{id}
+    </select>
+	
+        <update id="updateProduct" parameterType="edu.secondhand.entity.Product">
+      update product set
+        goodsname = #{Product.goodsname},
+        photo = #{Product.photo},
+        type = #{Product.type},
+        publisher = #{Product.publisher},
+        phone = #{Product.phone},
+        detail = #{Product.detail},
+        create_date = #{Product.create_date},
+        note = #{Product.note},
+        spot = #{Product.spot}
+        where id = #{Product.id}
+     </update>
+
+</mapper>

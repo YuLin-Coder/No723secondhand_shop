@@ -1,0 +1,45 @@
+useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.secondhand.dao.CommentsDao">
+
+	<select id="selectCommentsList"  resultType="edu.secondhand.entity.Comments" parameterType="map">
+		select * from Comments where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'"/>
+			and content like #{name}
+		</if>
+
+		<if test="map.sid != null and map.sid != '' ">
+			and sid = #{ map.sid}
+		</if>
+		<if test="map.gid != null and map.gid != '' ">
+			and gid = #{ map.gid}
+		</if>
+		order by id desc
+
+	</select>
+	<select id="selectAllComments"  resultType="edu.secondhand.entity.Comments">
+		select * from Comments
+	</select>
+	   <insert id="addComments" parameterType="edu.secondhand.entity.Comments" >
+	    insert into Comments (content,sid,create_time,gid,myd)
+	    values (#{Comments.content},#{Comments.sid},#{Comments.create_time},#{Comments.gid},#{Comments.myd})
+   </insert>
+
+	<delete id="deleteComments" parameterType="java.lang.Integer">
+	    delete from Comments
+	    where id = #{id}
+	  </delete>
+
+	<select id="selectCommentsById" parameterType="java.lang.Integer" resultType="edu.secondhand.entity.Comments">
+     select * from Comments where id = #{id}
+    </select>
+	
+        <update id="updateComments" parameterType="edu.secondhand.entity.Comments">
+      update Comments set 
+        content = #{Comments.content}
+        where id = #{Comments.id}
+     </update>
+
+</mapper>
